@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hand Gesture Controlled Robotic Arm</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;scroll-behavior:smooth}
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#f1f1f1;line-height:1.6;transition:0.5s;
+}
+header{
+  background:#1a2238;color:#fff;padding:15px 8%;
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:1000;
+  box-shadow:0 2px 6px rgba(0,0,0,.3)
+}
+header h1{font-size:22px;font-weight:700;letter-spacing:1px}
+nav ul{list-style:none;display:flex;gap:25px}
+nav ul li a{color:#fff;text-decoration:none;font-weight:500;transition:.3s}
+nav ul li a:hover{color:#00e6e6}
+.menu-btn{display:none;font-size:24px;cursor:pointer;color:#00e6e6}
+
+section{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:60px 20px;scroll-margin-top:90px;text-align:center
+}
+.container{max-width:1100px;width:100%}
+.section-title{
+  font-size:28px;font-weight:700;margin-bottom:25px;
+  color:#00e6e6;text-align:center
+}
+
+/* 🔥 Content Box Style */
+.content-box{
+  background:#1a2238;color:#f1f1f1;
+  border:2px solid #00e6e6;border-radius:15px;
+  padding:30px 40px;margin:0 auto;max-width:900px;
+  opacity:0; /* hidden by default */
+  transform:translateY(40px);
+  transition:all 0.8s ease-in-out;
+  text-align:justify;
+}
+.content-box.show {
+  opacity:1;
+  transform:translateY(0);
+  box-shadow:0 0 20px rgba(0,230,230,0.7);
+  animation:glowPulse 3s infinite ease-in-out;
+}
+@keyframes glowPulse{
+  0%{box-shadow:0 0 15px rgba(0,230,230,0.4)}
+  50%{box-shadow:0 0 30px rgba(0,230,230,0.9)}
+  100%{box-shadow:0 0 15px rgba(0,230,230,0.4)}
+}
+
+/* 🎥 Video Button */
+.video-btn {
+  margin-top:15px;
+  padding:10px 20px;
+  background:#00e6e6;
+  color:#000;
+  font-weight:600;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+}
+.video-btn:hover {background:#00cccc;color:#fff}
+
+/* 🎥 Modal Styling */
+.modal {
+  display:none;
+  position:fixed;
+  z-index:2000;
+  left:0;top:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+.modal-content {
+  background:#111;
+  padding:15px;
+  border-radius:10px;
+  width:80%;
+  max-width:800px;
+  box-shadow:0 0 20px rgba(0,230,230,0.7);
+  position:relative;
+}
+.modal-content iframe {
+  border-radius:10px;
+}
+.close {
+  position:absolute;
+  top:10px;right:20px;
+  font-size:30px;
+  color:#fff;
+  cursor:pointer;
+}
+
+.arch-img {
+  display: block;
+  max-width: 50%;
+  height: auto;
+  margin: 15px auto 0;  
+  border: 2px solid #00e6e6;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,230,230,0.6);
+}
+
+/* 🌍 Footer Styling */
+.footer {
+  background:#1a2238;
+  color:#bbb;
+  padding:40px 10%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  scroll-margin-top:90px; /* so contact nav scrolls correctly */
+}
+.footer .col {
+  flex:1 1 250px;
+  margin:15px;
+}
+.footer h3 {
+  color:#fff;
+  margin-bottom:15px;
+  font-size:18px;
+}
+.footer p, .footer a {
+  color:#bbb;
+  font-size:14px;
+  line-height:1.8;
+  text-decoration:none;
+}
+.footer a:hover {
+  color:#00e6e6;
+}
+.footer .social {
+  margin-top:15px;
+}
+.footer .social a {
+  display:inline-block;
+  margin-right:10px;
+  background:#2c3e50;
+  color:#fff;
+  padding:10px;
+  border-radius:6px;
+  transition:.3s;
+}
+.footer .social a:hover {
+  background:#00e6e6;
+  color:#000;
+}
+.footer-bottom {
+  text-align:center;
+  background:#111a2b;
+  color:#bbb;
+  padding:15px;
+  font-size:14px;
+}
+
+@media(max-width:900px){
+  header{padding:15px 5%}
+  nav ul{
+    flex-direction:column;position:absolute;top:65px;right:-220px;
+    background:#1a2238;padding:20px;width:200px;transition:.3s
+  }
+  nav ul.show{right:0}
+  .menu-btn{display:block}
+  .content-box{padding:20px}
+  .footer {flex-direction:column;text-align:center}
+}
+.content-box h2 {
+  text-align: center;
+  font-size: 26px;   /* optional - make it stand out */
+  font-weight: bold; /* optional */
+}
+header {
+  padding: 15px 2%;  /* reduced from 8% to 2% */
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Hand Gesture Controlled Robotic Arm✅</h1>
+  <div class="menu-btn">☰</div>
+  <nav><ul>
+    <li><a href="#home">Home</a></li><li><a href="#abstract">Abstract</a></li>
+    <li><a href="#problem">Problem</a></li><li><a href="#solution">Solution</a></li>
+    <li><a href="#architecture">Architecture</a></li><li><a href="#hardware">Hardware</a></li><li><a href="#Product">Product</a></li>
+    <li><a href="#applications">Applications</a></li><li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul></nav>
+</header>
+
+<section id="home"><div class="container">
+  <h2 class="section-title">WELCOME</h2>
+  <img src="Home.png" alt="Architecture Diagram" class="arch-img"> <br><br>
+  <div class="content-box"><h2>Welcome to our Hand Gesture Controlled Robotic Arm</h2></div><br><br>
+  This is our Gesture-Controlled Robotic Arm - designed to translate real-time human hand movements into robotic motion. We use MPU6050 to detect hand orientation and gestures. The sensor data is processed by Arduino ESP32 microcontroller, which sends precise control signals to the servo motors on the arm. Our goal is to create an intuitive human–machine interface, so controlling the robot feels as natural as moving your own hand. This technology has applications in industrial automation, medical robotics, and hazardous environment handling.
+</div></section>
+
+<section id="abstract"><div class="container">
+  <h2 class="section-title">📄 Abstract</h2>
+  <div class="content-box">
+    This paper presents the development of a gesture-controlled robotic arm that enables intuitive, real-time control through natural hand movements. The system utilises a wearable glove embedded with flex sensors and an MPU6050 accelerometer to detect finger bending and hand orientation. Sensor data is processed by an ESP32 microcontroller on the glove, which wirelessly transmits control commands using the ESP-NOW protocol to a second ESP32 mounted on the robotic arm. The robotic arm, designed with multiple degrees of freedom, is actuated by servo motors that replicate the user's hand gestures with accuracy and responsiveness. The design aims to provide a hands-free, user-friendly alternative to traditional control interfaces like joysticks or keyboards. With its low cost and ease of use, the system shows strong potential for applications in assistive technologies, industrial automation, remote manipulation, and medical robotics. This work demonstrates the effectiveness of integrating wearable sensor systems with embedded wireless control to enhance human–robot interaction.
+  </div>
+</div></section>
+
+<section id="problem"><div class="container">
+  <h2 class="section-title">❓ Problem</h2>
+  <div class="content-box">
+    Traditionally, robotic arms are operated using physical input devices like buttons, joysticks, or computer interfaces. While these methods are effective, they often require physical contact, user training, and may not be suitable in environments where safety, hygiene, or accessibility are critical. To overcome these limitations, gesture control has emerged as a more natural and intuitive alternative. With gesture-based systems, users can control robotic devices through simple hand movements, offering a more contactless and user-friendly experience.
+  </div>
+</div></section>
+
+<section id="solution"><div class="container">
+  <h2 class="section-title">💡 Solution</h2>
+  <div class="content-box">
+    A gesture-controlled system with wearable glove sensors and ESP32 modules provides natural, real-time, and wireless control of robotic arms, making them user-friendly and versatile.
+  </div>
+</div></section>
+
+<section id="architecture"><div class="container">
+  <h2 class="section-title">🛠 Architecture</h2>
+<div class="content-box">
+  Glove with Accelerometer sensor → Sensor Data Processing in ESP32 Transmitter → Wireless-Communication-using-ESP-NOW → ESP32-Receiver-for-Command-Decoding → Servo-Motor-Actuation → Robotic-Arm-Movement
+  <br><br>
+  <img src="Block.jpg" alt="Architecture Diagram" class="arch-img">
+</div>
+</div></section>
+
+<section id="hardware"><div class="container">
+  <h2 class="section-title">🔩 Hardware</h2>
+  <div class="content-box">
+    The hardware Consists of <br><br>
+    ➡️ ESP32 Microcontrollers <br> ➡️ Flex Sensors <br> ➡️ MPU6050 Accelerometer <br> ➡️ Servo Motors <br> ➡️ Power Supply <br> ➡️ 3D Printed Robotic Arm.
+    <br><br>
+    <!-- 🎥 Video Button -->
+    <button class="video-btn" onclick="openVideo()">▶ Project Working Video</button>
+      <img src="Glove.jpg" alt="Product Design" class="arch-img">
+  </div>
+</div></section>
+
+<!-- 🎥 Video Modal -->
+<div id="videoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeVideo()">&times;</span>
+    <iframe id="youtubeVideo" width="100%" height="400" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+<section id="Product"><div class="container">
+  <h2 class="section-title">🏠 Product and Output</h2>
+  <div class="content-box">
+    The gesture-controlled robotic arm was evaluated under multiple test conditions to measure its accuracy, responsiveness, and reliability. Testing focused on correct gesture interpretation, servo precision, communication latency, and consistent performance over extended use. The system achieved an average gesture recognition accuracy of 95%, with reliable detection of finger bending across various hand sizes after minor calibration. The MPU6050 sensor accurately tracked wrist orientation, enabling intuitive control of arm tilt and rotation. <br><br>
+    <img src="Product.jpg" alt="Product Design" class="arch-img"><br>
+    Real-time gesture recognition and motor response were achieved with minimal delay, averaging under 30 milliseconds using the ESP-NOW protocol. The robotic arm successfully performed tasks such as picking, rotating, and positioning lightweight objects at predefined locations. MG995 servos provided adequate torque for smooth base and shoulder movement, while SG90 micro servos managed finer motions in the wrist and gripper. Minor oscillations were observed during rapid movements, mostly due to limitations of the smaller servos. <br><br>
+    <img src="Robot.jpg" alt="Product Design" class="arch-img"><br>
+    The system proved stable during continuous operation, maintaining signal quality and sensor data consistency for over 30 minutes. Its modular structure also simplified hardware adjustments and part replacement during troubleshooting. As the design relies on sensor input rather than vision systems, performance remained largely unaffected by external factors like ambient lighting or electromagnetic interference. Some minor signal noise was noted in the flex sensor output, which could be mitigated in future versions with enhanced filtering or smoothing algorithms.
+    <img src="Output Result.jpg" alt="Product Design" class="arch-img"><br>
+</div>
+</div></section>
+
+<section id="applications"><div class="container">
+  <h2 class="section-title">📌 Applications</h2>
+  <div class="content-box">
+    <img src="Robo with bg.png" alt="Product Design" class="arch-img"><br><br>
+    <h1>✅ Assistive Technology</h1> Operators can control robotic arms from a safe distance without touching controls. Useful in hazardous environments like chemical plants, welding stations, or high-temperature areas.<br><br>
+    <h1>✅ Industrial Automation</h1> Assisting disabled people or amputees to control prosthetic arms using natural gestures.Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact.<br><br>
+    <h1>✅ Hazardous Environment Handling</h1> Handling radioactive materials in nuclear plants. Removing bombs or explosives through remote control (bomb disposal).Working inside deep mines where human entry is dangerous.<br><br>
+    <h1>✅ Medical Robotics</h1>Assisting disabled people or amputees to control prosthetic arms using natural gestures. Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact. <br><br>
+    <h1>✅ Education & Research</h1> Teaching robotics and human–machine interaction concepts. Used in robotics competitions as an interactive and engaging system.<br><br>
+    <h2>➡️ Key Advantages / Usage</h2><br>
+    1. Touchless control — hygienic and safe in medical & public environments. <br>
+    2. Intuitive operation — no special training needed for joystick or keyboard. <br>
+    3. Remote access — works even when operator is far away.
+
+  </div>
+</div></section>
+
+<section id="team"><div class="container">
+  <h2 class="section-title">👨‍💻 Team Members</h2>
+  <div class="content-box">
+    1. MOULIE SANKARAN S K (22MTR042)<br>
+    2. KAVINKUMAR S (22MTR042)<br>
+    3. LOGASUNDHARI B S (22MTR051)<br>
+    4. HARSHITHA A (24MTR030) <br><br>
+    <img src="image.jpg" alt="Product Design" class="arch-img"><br>
+  </div>
+</div></section>
+
+<!-- 🌍 Modern Footer with Contact -->
+<div id="contact" class="footer">
+  <div class="col">
+    <h3>Contact Info</h3>
+    <p>📍 KONGU ENGINEERING COLLEGE<br> PERUNDURAI, ERODE</p>
+    <p>📞 +91 8870601260</p>
+    <p>✉ <a href="mailto:support@company.com">mouliesankaransk.22mts@kongu.edu</a></p>
+  </div>
+</div>
+
+<div class="footer-bottom">
+  © 2025 Hand Gesture Controlled Robotic Arm | All Rights Reserved
+</div>
+
+<script>
+const menuBtn=document.querySelector('.menu-btn'),
+nav=document.querySelector('nav ul'),
+contentBoxes=document.querySelectorAll('.content-box');
+
+// Mobile menu toggle
+menuBtn.addEventListener('click',()=>nav.classList.toggle('show'));
+
+// Intersection Observer for scroll animations
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+},{threshold:0.3});
+
+contentBoxes.forEach(box=>observer.observe(box));
+
+// 🎥 Video Modal Functions
+function openVideo() {
+  document.getElementById("videoModal").style.display = "flex";
+  document.getElementById("youtubeVideo").src = "https://www.youtube.com/embed/0cdQB5YrEKU?autoplay=1";
+}
+function closeVideo() {
+  document.getElementById("videoModal").style.display = "none";
+  document.getElementById("youtubeVideo").src = "";
+}
+</script>
+</body>
+</html>
