@@ -1,328 +1,452 @@
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hand Gesture Controlled Robotic Arm</title>
 <style>
-  /* Reset & Base */
-  *,*::before,*::after{box-sizing:border-box}
-  html,body{width:100%;min-height:100%;margin:0;padding:0}
-  body{
-    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:#f1f1f1;line-height:1.6;transition:.5s;overflow-x:hidden;
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
-    word-wrap:break-word;overflow-wrap:break-word;
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;scroll-behavior:smooth}
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#f1f1f1;line-height:1.6;transition:0.5s;
+}
+header{
+  background:#1a2238;color:#fff;padding:15px 8%;
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:1000;
+  box-shadow:0 2px 6px rgba(0,0,0,.3)
+}
+header h1{font-size:22px;font-weight:700;letter-spacing:1px}
+nav ul{list-style:none;display:flex;gap:25px}
+nav ul li a{color:#fff;text-decoration:none;font-weight:500;transition:.3s}
+nav ul li a:hover{color:#00e6e6}
+.menu-btn{display:none;font-size:24px;cursor:pointer;color:#00e6e6}
+
+section{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:60px 20px;scroll-margin-top:90px;text-align:center
+}
+.container{max-width:1100px;width:100%}
+.section-title{
+  font-size:28px;font-weight:700;margin-bottom:25px;
+  color:#00e6e6;text-align:center
+}
+
+/* 🔥 Content Box Style */
+.content-box{
+  background:#1a2238;color:#f1f1f1;
+  border:2px solid #00e6e6;border-radius:15px;
+  padding:30px 40px;margin:0 auto;max-width:900px;
+  opacity:0; /* hidden by default */
+  transform:translateY(40px);
+  transition:all 0.8s ease-in-out;
+  text-align:justify;
+}
+.content-box.show {
+  opacity:1;
+  transform:translateY(0);
+  box-shadow:0 0 20px rgba(0,230,230,0.7);
+  animation:glowPulse 3s infinite ease-in-out;
+}
+@keyframes glowPulse{
+  0%{box-shadow:0 0 15px rgba(0,230,230,0.4)}
+  50%{box-shadow:0 0 30px rgba(0,230,230,0.9)}
+  100%{box-shadow:0 0 15px rgba(0,230,230,0.4)}
+}
+
+/* 🎥 Video Button */
+.video-btn {
+  margin-top:15px;
+  padding:10px 20px;
+  background:#00e6e6;
+  color:#000;
+  font-weight:600;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+}
+.video-btn:hover {background:#00cccc;color:#fff}
+
+/* 🎥 Modal Styling */
+.modal {
+  display:none;
+  position:fixed;
+  z-index:2000;
+  left:0;top:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+.modal-content {
+  background:#111;
+  padding:15px;
+  border-radius:10px;
+  width:80%;
+  max-width:800px;
+  box-shadow:0 0 20px rgba(0,230,230,0.7);
+  position:relative;
+}
+.modal-content iframe {
+  border-radius:10px;
+}
+.close {
+  position:absolute;
+  top:10px;right:20px;
+  font-size:30px;
+  color:#fff;
+  cursor:pointer;
+}
+
+.arch-img {
+  display: block;
+  max-width: 50%;
+  height: auto;
+  margin: 15px auto 0;  
+  border: 2px solid #00e6e6;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,230,230,0.6);
+}
+
+/* 🌍 Footer Styling */
+.footer {
+  background:#1a2238;
+  color:#bbb;
+  padding:40px 10%;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  scroll-margin-top:90px; /* so contact nav scrolls correctly */
+}
+.footer .col {
+  flex:1 1 250px;
+  margin:15px;
+}
+.footer h3 {
+  color:#fff;
+  margin-bottom:15px;
+  font-size:18px;
+}
+.footer p, .footer a {
+  color:#bbb;
+  font-size:14px;
+  line-height:1.8;
+  text-decoration:none;
+}
+.footer a:hover {
+  color:#00e6e6;
+}
+.footer .social {
+  margin-top:15px;
+}
+.footer .social a {
+  display:inline-block;
+  margin-right:10px;
+  background:#2c3e50;
+  color:#fff;
+  padding:10px;
+  border-radius:6px;
+  transition:.3s;
+}
+.footer .social a:hover {
+  background:#00e6e6;
+  color:#000;
+}
+.footer-bottom {
+  text-align:center;
+  background:#111a2b;
+  color:#bbb;
+  padding:15px;
+  font-size:14px;
+}
+
+@media(max-width:900px){
+  header{padding:15px 5%}
+  nav ul{
+    flex-direction:column;position:absolute;top:65px;right:-220px;
+    background:#1a2238;padding:20px;width:200px;transition:.3s
   }
-  img,video,iframe{max-width:100%;height:auto}
+  nav ul.show{right:0}
+  .menu-btn{display:block}
+  .content-box{padding:20px}
+  .footer {flex-direction:column;text-align:center}
+}
+.content-box h2 {
+  text-align: center;
+  font-size: 26px;   /* optional - make it stand out */
+  font-weight: bold; /* optional */
+}
+header {
+  padding: 15px 2%;  /* reduced from 8% to 2% */
+}
 
-  /* Header */
-  header{
-    background:#1a2238;color:#fff;padding:12px 2%;
-    display:flex;justify-content:space-between;align-items:center;
-    position:sticky;top:0;z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,.3)
-  }
-  header h1{font-size:18px;font-weight:700;letter-spacing:.5px;margin:0}
+/* 👥 Team Cards */
+.team-grid{ 
+  display:grid; 
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px; 
+  margin-top:10px;
+}
+.mentor-grid{ 
+  display:grid; 
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px; 
+  margin-top:10px;
+}
+.member-card{
+  background:#111a2b;
+  border:1px solid rgba(0,230,230,0.5);
+  border-radius:18px;
+  padding:18px 16px;
+  text-align:center;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.member-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 24px rgba(0,230,230,0.3);
+  border-color:#00e6e6;
+}
+.member-photo{
+  width:160px;height:160px;object-fit:cover;
+  border-radius:50%;
+  border:3px solid #00e6e6;
+  margin:8px auto 14px;
+  display:block;
+}
+.member-name{font-weight:700;font-size:18px;margin-bottom:4px;color:#fff}
+.member-role{font-size:14px;color:#a8e6e6;margin-bottom:6px}
+.member-id{font-size:13px;color:#9ab;opacity:.95}
 
-  /* Nav */
-  nav ul{list-style:none;display:flex;gap:25px;margin:0;padding:0}
-  nav ul li a{color:#fff;text-decoration:none;font-weight:500;transition:.3s}
-  nav ul li a:hover{color:#00e6e6}
-  .menu-btn{display:none;font-size:26px;cursor:pointer;color:#00e6e6}
-
-  /* Sections */
-  section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 16px;scroll-margin-top:80px;text-align:center}
-  .container{max-width:1100px;width:100%;margin:0 auto}
-  .section-title{font-size:28px;font-weight:700;margin-bottom:22px;color:#00e6e6;text-align:center}
-
-  /* Content Box */
-  .content-box{
-    background:#1a2238;color:#f1f1f1;border:2px solid #00e6e6;border-radius:15px;
-    padding:26px 28px;margin:0 auto;max-width:900px;opacity:0;transform:translateY(40px);
-    transition:all .8s ease-in-out;text-align:justify
-  }
-  .content-box.show{opacity:1;transform:translateY(0);box-shadow:0 0 20px rgba(0,230,230,.7);animation:glowPulse 3s infinite ease-in-out}
-  @keyframes glowPulse{0%{box-shadow:0 0 15px rgba(0,230,230,.4)}50%{box-shadow:0 0 30px rgba(0,230,230,.9)}100%{box-shadow:0 0 15px rgba(0,230,230,.4)}}
-  .content-box h2{text-align:center;font-size:24px;font-weight:800;margin-top:0}
-
-  /* Images */
-  .arch-img{
-    display:block;width:100%;max-width:900px;height:auto;margin:15px auto 0;
-    border:2px solid #00e6e6;border-radius:12px;box-shadow:0 0 15px rgba(0,230,230,.6)
-  }
-
-  /* Footer */
-  .footer{background:#1a2238;color:#bbb;padding:32px 5%;display:flex;flex-wrap:wrap;justify-content:space-between;scroll-margin-top:80px}
-  .footer .col{flex:1 1 260px;margin:10px}
-  .footer h3{color:#fff;margin:0 0 12px 0;font-size:18px}
-  .footer p,.footer a{color:#bbb;font-size:14px;line-height:1.8;text-decoration:none}
-  .footer a:hover{color:#00e6e6}
-  .footer .social{margin-top:15px}
-  .footer .social a{display:inline-block;margin-right:10px;background:#2c3e50;color:#fff;padding:10px;border-radius:6px;transition:.3s}
-  .footer .social a:hover{background:#00e6e6;color:#000}
-  .footer-bottom{text-align:center;background:#111a2b;color:#bbb;padding:14px;font-size:14px}
-
-  /* Cards / Grid */
-  .team-grid,.mentor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:10px}
-  .member-card{background:#111a2b;border:1px solid rgba(0,230,230,.5);border-radius:18px;padding:16px;text-align:center;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease}
-  .member-card:hover{transform:translateY(-4px);box-shadow:0 0 24px rgba(0,230,230,.3);border-color:#00e6e6}
-  .member-photo{width:140px;height:140px;object-fit:cover;border-radius:50%;border:3px solid #00e6e6;margin:8px auto 12px;display:block}
-  .member-name{font-weight:700;font-size:18px;margin-bottom:4px;color:#fff}
-  .member-role{font-size:14px;color:#a8e6e6;margin-bottom:6px}
-  .member-id{font-size:13px;color:#9ab;opacity:.95}
-  .badge{display:inline-block;padding:4px 10px;border:1px solid #00e6e6;border-radius:999px;font-size:12px;margin-top:8px}
-
-  /* Modal */
-  .modal{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center}
-  .modal-content{background:#111;padding:12px;border-radius:10px;width:min(90%,800px);box-shadow:0 0 20px rgba(0,230,230,.7);position:relative}
-  .modal-content iframe{border-radius:10px}
-  .close{position:absolute;top:10px;right:16px;font-size:28px;color:#fff;cursor:pointer}
-  .video-btn{margin-top:15px;padding:10px 20px;background:#00e6e6;color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:.3s}
-  .video-btn:hover{background:#00cccc;color:#fff}
-
-  /* Mobile tweaks */
-  @media (max-width: 900px){
-    header{padding:12px 4%}
-    header h1{font-size:16px}
-    /* Off-canvas nav that does NOT cause horizontal scroll */
-    nav ul{flex-direction:column;position:fixed;top:60px;right:0;width:min(76vw,280px);height:calc(100vh - 60px);padding:20px;background:#1a2238;gap:16px;transform:translateX(110%);transition:transform .3s ease;box-shadow: -6px 0 20px rgba(0,0,0,.35)}
-    nav ul.show{transform:translateX(0)}
-    .menu-btn{display:block}
-    section{padding:48px 12px}
-    .content-box{padding:18px}
-    .team-grid,.mentor-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-    .member-photo{width:120px;height:120px}
-    .arch-img{max-width:100%}
-  }
+.badge{ 
+  display:inline-block; 
+  padding:4px 10px; 
+  border:1px solid #00e6e6; 
+  border-radius:999px; 
+  font-size:12px; 
+  margin-top:8px; 
+}
 </style>
 </head>
 <body>
-  <header>
-    <h1>👋 Hand Gesture Controlled Robotic Arm 🤖</h1>
-    <div class="menu-btn" aria-label="Open menu" role="button" tabindex="0">☰</div>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#abstract">Abstract</a></li>
-        <li><a href="#problem">Problem</a></li>
-        <li><a href="#solution">Solution</a></li>
-        <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#hardware">Hardware</a></li>
-        <li><a href="#Product">Product</a></li>
-        <li><a href="#applications">Applications</a></li>
-        <li><a href="#team">Team</a></li>
-        <li><a href="#mentor">Mentor</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+<header>
+  <h1>👋Hand Gesture Controlled Robotic Arm🤖</h1>
+  <div class="menu-btn">☰</div>
+  <nav><ul>
+    <li><a href="#home">Home</a></li><li><a href="#abstract">Abstract</a></li>
+    <li><a href="#problem">Problem</a></li><li><a href="#solution">Solution</a></li>
+    <li><a href="#architecture">Architecture</a></li><li><a href="#hardware">Hardware</a></li><li><a href="#Product">Product</a></li>
+    <li><a href="#applications">Applications</a></li><li><a href="#team">Team</a></li><li><a href="#mentor">Mentor</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul></nav>
+</header>
 
-  <section id="home"><div class="container">
-    <h2 class="section-title">WELCOME TO</h2>
-    <img src="Home.png" alt="Home Banner" class="arch-img" />
-    <br />
-    <div class="content-box"><h2>Welcome to our Hand Gesture Controlled Robotic Arm Project</h2></div>
-    <br />
-    This is our Gesture-Controlled Robotic Arm - designed to translate real-time human hand movements into robotic motion. We use MPU6050 to detect hand orientation and gestures. The sensor data is processed by Arduino ESP32 microcontroller, which sends precise control signals to the servo motors on the arm. Our goal is to create an intuitive human–machine interface, so controlling the robot feels as natural as moving your own hand. This technology has applications in industrial automation, medical robotics, and hazardous environment handling.
-  </div></section>
+<section id="home"><div class="container">
+  <h2 class="section-title">WELCOME TO</h2>
+  <img src="Home.png" alt="Architecture Diagram" class="arch-img"> <br><br>
+  <div class="content-box"><h2>Welcome to our Hand Gesture Controlled Robotic Arm Project</h2></div><br><br>
+  This is our Gesture-Controlled Robotic Arm - designed to translate real-time human hand movements into robotic motion. We use MPU6050 to detect hand orientation and gestures. The sensor data is processed by Arduino ESP32 microcontroller, which sends precise control signals to the servo motors on the arm. Our goal is to create an intuitive human–machine interface, so controlling the robot feels as natural as moving your own hand. This technology has applications in industrial automation, medical robotics, and hazardous environment handling.
+</div></section>
 
-  <section id="abstract"><div class="container">
-    <h2 class="section-title">📄 Abstract</h2>
-    <div class="content-box">
-      This paper presents the development of a gesture-controlled robotic arm that enables intuitive, real-time control through natural hand movements. The system utilises a wearable glove embedded with flex sensors and an MPU6050 accelerometer to detect finger bending and hand orientation. Sensor data is processed by an ESP32 microcontroller on the glove, which wirelessly transmits control commands using the ESP-NOW protocol to a second ESP32 mounted on the robotic arm. The robotic arm, designed with multiple degrees of freedom, is actuated by servo motors that replicate the user's hand gestures with accuracy and responsiveness. The design aims to provide a hands-free, user-friendly alternative to traditional control interfaces like joysticks or keyboards. With its low cost and ease of use, the system shows strong potential for applications in assistive technologies, industrial automation, remote manipulation, and medical robotics. This work demonstrates the effectiveness of integrating wearable sensor systems with embedded wireless control to enhance human–robot interaction.
-    </div>
-  </div></section>
-
-  <section id="problem"><div class="container">
-    <h2 class="section-title">❓ Problem</h2>
-    <div class="content-box">
-      Traditionally, robotic arms are operated using physical input devices like buttons, joysticks, or computer interfaces. While these methods are effective, they often require physical contact, user training, and may not be suitable in environments where safety, hygiene, or accessibility are critical. To overcome these limitations, gesture control has emerged as a more natural and intuitive alternative. With gesture-based systems, users can control robotic devices through simple hand movements, offering a more contactless and user-friendly experience.
-    </div>
-  </div></section>
-
-  <section id="solution"><div class="container">
-    <h2 class="section-title">💡 Solution</h2>
-    <div class="content-box">
-      This project proposes a gesture-controlled robotic arm as an intuitive and hygienic alternative to conventional joystick- or button-based systems. Traditional methods require physical contact and training, which limits their use in healthcare, assistive robotics, or hazardous environments. The developed system uses flex sensors and an MPU6050 accelerometer integrated into a wearable glove to detect finger bending and hand orientation. These signals are processed by an ESP32 microcontroller and transmitted wirelessly via the ESP-NOW protocol to a second ESP32 controlling the robotic arm.
-      <br /><br />
-      The arm is powered by MG995 high-torque servos for base and shoulder motion and SG90 micro servos for wrist and gripper control, enabling human-like movement across multiple degrees of freedom. The mechanical structure, modeled in SolidWorks and fabricated using PLA through 3D printing, ensures strength, flexibility, and ergonomic performance. Forward kinematics based on the Denavit–Hartenberg (DH) convention was applied to mathematically represent the arm’s motion, while MATLAB simulations validated trajectory accuracy.
-    </div>
-  </div></section>
-
-  <section id="architecture"><div class="container">
-    <h2 class="section-title">🛠 Architecture</h2>
-    <div class="content-box">
-      Glove with Accelerometer sensor → Sensor Data Processing in ESP32 Transmitter → Wireless-Communication-using-ESP-NOW → ESP32-Receiver-for-Command-Decoding → Servo-Motor-Actuation → Robotic-Arm-Movement
-      <br /><br />
-      <img src="Block.jpg" alt="System Block Diagram" class="arch-img" />
-    </div>
-  </div></section>
-
-  <section id="hardware"><div class="container">
-    <h2 class="section-title">🔩 Hardware</h2>
-    <div class="content-box">
-      The hardware Consists of <br /><br />
-      ➡️ ESP32 Microcontrollers <br /> ➡️ Flex Sensors <br /> ➡️ MPU6050 Accelerometer <br /> ➡️ Servo Motors <br /> ➡️ Power Supply <br /> ➡️ 3D Printed Robotic Arm.
-      <br /><br />
-      <button class="video-btn" onclick="openVideo()">▶ Project Working Video</button>
-      <img src="Glove.jpg" alt="Glove Product Design" class="arch-img" />
-      <img src="robo green bg.png" alt="Robotic Arm" class="arch-img" />
-    </div>
-  </div></section>
-
-  <!-- Video Modal -->
-  <div id="videoModal" class="modal" role="dialog" aria-modal="true" aria-label="Project Video">
-    <div class="modal-content">
-      <span class="close" onclick="closeVideo()" aria-label="Close">&times;</span>
-      <iframe id="youtubeVideo" width="100%" height="400" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
+<section id="abstract"><div class="container">
+  <h2 class="section-title">📄 Abstract</h2>
+  <div class="content-box">
+    This paper presents the development of a gesture-controlled robotic arm that enables intuitive, real-time control through natural hand movements. The system utilises a wearable glove embedded with flex sensors and an MPU6050 accelerometer to detect finger bending and hand orientation. Sensor data is processed by an ESP32 microcontroller on the glove, which wirelessly transmits control commands using the ESP-NOW protocol to a second ESP32 mounted on the robotic arm. The robotic arm, designed with multiple degrees of freedom, is actuated by servo motors that replicate the user's hand gestures with accuracy and responsiveness. The design aims to provide a hands-free, user-friendly alternative to traditional control interfaces like joysticks or keyboards. With its low cost and ease of use, the system shows strong potential for applications in assistive technologies, industrial automation, remote manipulation, and medical robotics. This work demonstrates the effectiveness of integrating wearable sensor systems with embedded wireless control to enhance human–robot interaction.
   </div>
+</div></section>
 
-  <section id="Product"><div class="container">
-    <h2 class="section-title">🏠 Product and Output</h2>
-    <div class="content-box">
-      The gesture-controlled robotic arm was evaluated under multiple test conditions to measure its accuracy, responsiveness, and reliability. Testing focused on correct gesture interpretation, servo precision, communication latency, and consistent performance over extended use. The system achieved an average gesture recognition accuracy of 95%, with reliable detection of finger bending across various hand sizes after minor calibration. The MPU6050 sensor accurately tracked wrist orientation, enabling intuitive control of arm tilt and rotation. <br /><br />
-      <img src="Product.jpg" alt="Product Design" class="arch-img" /><br />
-      Real-time gesture recognition and motor response were achieved with minimal delay, averaging under 30 milliseconds using the ESP-NOW protocol. The robotic arm successfully performed tasks such as picking, rotating, and positioning lightweight objects at predefined locations. MG995 servos provided adequate torque for smooth base and shoulder movement, while SG90 micro servos managed finer motions in the wrist and gripper. Minor oscillations were observed during rapid movements, mostly due to limitations of the smaller servos. <br /><br />
-      <img src="Robot.jpg" alt="Robot Photo" class="arch-img" /><br />
-      The system proved stable during continuous operation, maintaining signal quality and sensor data consistency for over 30 minutes. Its modular structure also simplified hardware adjustments and part replacement during troubleshooting. As the design relies on sensor input rather than vision systems, performance remained largely unaffected by external factors like ambient lighting or electromagnetic interference. Some minor signal noise was noted in the flex sensor output, which could be mitigated in future versions with enhanced filtering or smoothing algorithms.
-      <img src="Output Result.jpg" alt="Output Graph" class="arch-img" /><br />
-    </div>
-  </div></section>
-
-  <section id="applications"><div class="container">
-    <h2 class="section-title">📌 Applications</h2>
-    <div class="content-box">
-      <img src="Robo with bg.png" alt="Applications Visual" class="arch-img" /><br /><br />
-      <h3>✅ Assistive Technology</h3>
-      Operators can control robotic arms from a safe distance without touching controls. Useful in hazardous environments like chemical plants, welding stations, or high-temperature areas.<br /><br />
-      <h3>✅ Industrial Automation</h3>
-      Assisting disabled people or amputees to control prosthetic arms using natural gestures. Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact.<br /><br />
-      <h3>✅ Hazardous Environment Handling</h3>
-      Handling radioactive materials in nuclear plants. Removing bombs or explosives through remote control (bomb disposal). Working inside deep mines where human entry is dangerous.<br /><br />
-      <h3>✅ Medical Robotics</h3>
-      Assisting disabled people or amputees to control prosthetic arms using natural gestures. Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact. <br /><br />
-      <h3>✅ Education & Research</h3>
-      Teaching robotics and human–machine interaction concepts. Used in robotics competitions as an interactive and engaging system.<br /><br />
-      <h4>➡️ Key Advantages / Usage</h4><br />
-      1. Touchless control — hygienic and safe in medical & public environments. <br />
-      2. Intuitive operation — no special training needed for joystick or keyboard. <br />
-      3. Remote access — works even when operator is far away.
-    </div>
-  </div></section>
-
-  <section id="team"><div class="container">
-    <h2 class="section-title">👨‍💻 Team Members</h2>
-    <div class="content-box">
-      <div style="text-align:center;margin-bottom:12px">OUR CORE TEAM OF THE PROJECT</div>
-      <div class="team-grid">
-        <div class="member-card">
-          <img src="moulie.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo" />
-          <div class="member-name">MOULIE SANKARAN S K</div>
-          <div class="member-role">Project Lead & Electrical Setup</div>
-          <div class="member-id">Reg. No: 22MTR054</div>
-          <span class="badge">Mechatronics Engineering</span>
-        </div>
-        <div class="member-card">
-          <img src="kavin.jpg" alt="Photo of KAVINKUMAR S" class="member-photo" />
-          <div class="member-name">KAVINKUMAR S</div>
-          <div class="member-role">Design & Fabrication & Website/UI</div>
-          <div class="member-id">Reg. No: 22MTR042</div>
-          <span class="badge">Mechatronics Engineering</span>
-        </div>
-        <div class="member-card">
-          <img src="loga.png" alt="Photo of LOGASUNDHARI B S" class="member-photo" />
-          <div class="member-name">LOGASUNDHARI B S</div>
-          <div class="member-role">Presentation & Documentation</div>
-          <div class="member-id">Reg. No: 22MTR051</div>
-          <span class="badge">Mechatronics Engineering</span>
-        </div>
-        <div class="member-card">
-          <img src="harshitha.jpg" alt="Photo of HARSHITHA A" class="member-photo" />
-          <div class="member-name">HARSHITHA A</div>
-          <div class="member-role">Junior</div>
-          <div class="member-id">Reg. No: 24MTR030</div>
-          <span class="badge">Mechatronics Engineering</span>
-        </div>
-        <div class="member-card">
-          <img src="demo.jpeg" alt="Photo of PRIYADARSHINEE B" class="member-photo" />
-          <div class="member-name">PRIYADARSHINEE B</div>
-          <div class="member-role">Junior</div>
-          <div class="member-id">Reg. No: 24MTR051</div>
-          <span class="badge">Mechatronics Engineering</span>
-        </div>
-      </div>
-    </div>
-  </div></section>
-
-  <section id="mentor"><div class="container">
-    <h2 class="section-title">👨‍💻 Our Mentors</h2>
-    <div class="content-box">
-      <div class="mentor-grid">
-        <div class="member-card">
-          <img src="sugu.jpg" alt="Photo of Dr. K. Suganeswaran" class="member-photo" />
-          <div class="member-name">Dr. K. SUGANESWARAN</div>
-          <span class="badge">Mechatronics Engineering</span>
-          <p>Dr. K. Suganeswaran is currently serving in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. He holds an M.Tech and a Ph.D., with specialization in Noise, Vibration and Harshness (NVH), Automotive Engineering, Automotive Materials, and Friction Stir Process. He has actively contributed to research with 8 national journal publications and 16 international journal publications. He has presented in 2 national conferences and 18 international conferences. His academic and research interests lie in enhancing vehicle dynamics, materials processing, and noise reduction techniques in automotive systems.</p>
-        </div>
-        <div class="member-card">
-          <img src="nith.jpg" alt="Photo of Dr. N. Nithyavathy" class="member-photo" />
-          <div class="member-name">Dr. N. Nithyavathy</div>
-          <span class="badge">Mechatronics Engineering</span>
-          <p>Dr.N.Nithyavathy is serving as an Associate Professor in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. She holds a B.E. in Electronics and Communication Engineering, an M.E. in Mechatronics Engineering, and a Ph.D. in Information and Communication Engineering. With 17 years of academic and research experience, her core areas of expertise include Control Systems Engineering and Composite Materials. She has published more than 55 SCI-indexed journal papers and has delivered over 65 lecture programs across various institutions in India.</p>
-        </div>
-      </div>
-    </div>
-  </div></section>
-
-  <div id="contact" class="footer">
-    <div class="col">
-      <h3>Contact Info</h3>
-      <p>📍 KONGU ENGINEERING COLLEGE<br /> PERUNDURAI, ERODE</p>
-      <p>📞 +91 8870601260</p>
-      <p>📞 +91 8012093099</p>
-      <p>✉ <a href="mailto:mouliesankaransk.22mts@kongu.edu">mouliesankaransk.22mts@kongu.edu</a></p>
-      <p>✉ <a href="mailto:kavinkumars.22mts@kongu.edu">kavinkumars.22mts@kongu.edu</a></p>
-    </div>
+<section id="problem"><div class="container">
+  <h2 class="section-title">❓ Problem</h2>
+  <div class="content-box">
+    Traditionally, robotic arms are operated using physical input devices like buttons, joysticks, or computer interfaces. While these methods are effective, they often require physical contact, user training, and may not be suitable in environments where safety, hygiene, or accessibility are critical. To overcome these limitations, gesture control has emerged as a more natural and intuitive alternative. With gesture-based systems, users can control robotic devices through simple hand movements, offering a more contactless and user-friendly experience.
   </div>
+</div></section>
 
-  <div class="footer-bottom">© 2025 Hand Gesture Controlled Robotic Arm | All Rights Reserved</div>
+<section id="solution"><div class="container">
+  <h2 class="section-title">💡 Solution</h2>
+  <div class="content-box">
+    This project proposes a gesture-controlled robotic arm as an intuitive and hygienic alternative to conventional joystick- or button-based systems. Traditional methods require physical contact and training, which limits their use in healthcare, assistive robotics, or hazardous environments. The developed system uses flex sensors and an MPU6050 accelerometer integrated into a wearable glove to detect finger bending and hand orientation. These signals are processed by an ESP32 microcontroller and transmitted wirelessly via the ESP-NOW protocol to a second ESP32 controlling the robotic arm.
+The arm is powered by MG995 high-torque servos for base and shoulder motion and SG90 micro servos for wrist and gripper control, enabling human-like movement across multiple degrees of freedom. The mechanical structure, modeled in SolidWorks and fabricated using PLA through 3D printing, ensures strength, flexibility, and ergonomic performance. Forward kinematics based on the Denavit–Hartenberg (DH) convention was applied to mathematically represent the arm’s motion, while MATLAB simulations validated trajectory accuracy.
+  </div>
+</div></section>
 
-  <script>
-    const menuBtn = document.querySelector('.menu-btn');
-    const navList = document.querySelector('nav ul');
-    const contentBoxes = document.querySelectorAll('.content-box');
+<section id="architecture"><div class="container">
+  <h2 class="section-title">🛠 Architecture</h2>
+<div class="content-box">
+  Glove with Accelerometer sensor → Sensor Data Processing in ESP32 Transmitter → Wireless-Communication-using-ESP-NOW → ESP32-Receiver-for-Command-Decoding → Servo-Motor-Actuation → Robotic-Arm-Movement
+  <br><br>
+  <img src="Block.jpg" alt="Architecture Diagram" class="arch-img">
+</div>
+</div></section>
 
-    // Mobile menu toggle
-    function toggleMenu(){ navList.classList.toggle('show'); }
-    menuBtn.addEventListener('click', toggleMenu);
-    menuBtn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleMenu(); }});
+<section id="hardware"><div class="container">
+  <h2 class="section-title">🔩 Hardware</h2>
+  <div class="content-box">
+    The hardware Consists of <br><br>
+    ➡️ ESP32 Microcontrollers <br> ➡️ Flex Sensors <br> ➡️ MPU6050 Accelerometer <br> ➡️ Servo Motors <br> ➡️ Power Supply <br> ➡️ 3D Printed Robotic Arm.
+    <br><br>
+    <!-- 🎥 Video Button -->
+    <button class="video-btn" onclick="openVideo()">▶ Project Working Video</button>
+      <img src="Glove.jpg" alt="Product Design" class="arch-img">
+      <img src="robo green bg.png" alt="Product Design" class="arch-img">
+  </div>
+</div></section>
 
-    // Close menu when clicking a link (mobile UX)
-    navList.addEventListener('click', (e)=>{
-      if(e.target.tagName.toLowerCase()==='a'){ navList.classList.remove('show'); }
-    });
+<!-- 🎥 Video Modal -->
+<div id="videoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeVideo()">&times;</span>
+    <iframe id="youtubeVideo" width="100%" height="400" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
 
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('show'); } });
-    },{threshold:0.25});
-    contentBoxes.forEach(box=>observer.observe(box));
+<section id="Product"><div class="container">
+  <h2 class="section-title">🏠 Product and Output</h2>
+  <div class="content-box">
+    The gesture-controlled robotic arm was evaluated under multiple test conditions to measure its accuracy, responsiveness, and reliability. Testing focused on correct gesture interpretation, servo precision, communication latency, and consistent performance over extended use. The system achieved an average gesture recognition accuracy of 95%, with reliable detection of finger bending across various hand sizes after minor calibration. The MPU6050 sensor accurately tracked wrist orientation, enabling intuitive control of arm tilt and rotation. <br><br>
+    <img src="Product.jpg" alt="Product Design" class="arch-img"><br>
+    Real-time gesture recognition and motor response were achieved with minimal delay, averaging under 30 milliseconds using the ESP-NOW protocol. The robotic arm successfully performed tasks such as picking, rotating, and positioning lightweight objects at predefined locations. MG995 servos provided adequate torque for smooth base and shoulder movement, while SG90 micro servos managed finer motions in the wrist and gripper. Minor oscillations were observed during rapid movements, mostly due to limitations of the smaller servos. <br><br>
+    <img src="Robot.jpg" alt="Product Design" class="arch-img"><br>
+    The system proved stable during continuous operation, maintaining signal quality and sensor data consistency for over 30 minutes. Its modular structure also simplified hardware adjustments and part replacement during troubleshooting. As the design relies on sensor input rather than vision systems, performance remained largely unaffected by external factors like ambient lighting or electromagnetic interference. Some minor signal noise was noted in the flex sensor output, which could be mitigated in future versions with enhanced filtering or smoothing algorithms.
+    <img src="Output Result.jpg" alt="Product Design" class="arch-img"><br>
+</div>
+</div></section>
 
-    // Video Modal
-    function openVideo(){
-      document.getElementById('videoModal').style.display='flex';
-      document.getElementById('youtubeVideo').src='https://www.youtube.com/embed/0cdQB5YrEKU?autoplay=1';
+<section id="applications"><div class="container">
+  <h2 class="section-title">📌 Applications</h2>
+  <div class="content-box">
+    <img src="Robo with bg.png" alt="Product Design" class="arch-img"><br><br>
+    <h1>✅ Assistive Technology</h1> Operators can control robotic arms from a safe distance without touching controls. Useful in hazardous environments like chemical plants, welding stations, or high-temperature areas.<br><br>
+    <h1>✅ Industrial Automation</h1> Assisting disabled people or amputees to control prosthetic arms using natural gestures.Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact.<br><br>
+    <h1>✅ Hazardous Environment Handling</h1> Handling radioactive materials in nuclear plants. Removing bombs or explosives through remote control (bomb disposal).Working inside deep mines where human entry is dangerous.<br><br>
+    <h1>✅ Medical Robotics</h1>Assisting disabled people or amputees to control prosthetic arms using natural gestures. Remote-controlled surgery - a surgeon can manipulate robotic tools without direct contact. <br><br>
+    <h1>✅ Education & Research</h1> Teaching robotics and human–machine interaction concepts. Used in robotics competitions as an interactive and engaging system.<br><br>
+    <h2>➡️ Key Advantages / Usage</h2><br>
+    1. Touchless control — hygienic and safe in medical & public environments. <br>
+    2. Intuitive operation — no special training needed for joystick or keyboard. <br>
+    3. Remote access — works even when operator is far away.
+
+  </div>
+</div></section>
+
+<section id="team"><div class="container">
+  <h2 class="section-title">👨‍💻 Team Members</h2>
+  <div class="content-box">
+    <div style="text-align:center;margin-bottom:12px">OUR CORE TEAM OF THE PROJECT</div>
+
+    <!-- 👥 New Team Cards (3 Members) -->
+    <div class="team-grid">
+      <!-- Member 1 -->
+      <div class="member-card">
+        <img src="moulie.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">MOULIE SANKARAN S K</div>
+        <div class="member-role">Project Lead & Electrical Setup</div>
+        <div class="member-id">Reg. No: 22MTR054</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+      <!-- Member 2 -->
+      <div class="member-card">
+        <img src="kavin.jpg" alt="Photo of KAVINKUMAR S" class="member-photo">
+        <div class="member-name">KAVINKUMAR S</div>
+        <div class="member-role">Design & Fabrication & Website/UI</div>
+        <div class="member-id">Reg. No: 22MTR042</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+      <!-- Member 3 -->
+      <div class="member-card">
+        <img src="loga.png" alt="Photo of LOGASUNDHARI B S" class="member-photo">
+        <div class="member-name">LOGASUNDHARI B S</div>
+        <div class="member-role">Presentation & Documentaion</div>
+        <div class="member-id">Reg. No: 22MTR051</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+            <!-- Member 4 -->
+      <div class="member-card">
+        <img src="harshitha.jpg" alt="Photo of HARSHITHA A" class="member-photo">
+        <div class="member-name">HARSHITHA A</div>
+        <div class="member-role">Junior</div>
+        <div class="member-id">Reg. No: 24MTR030</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+            <!-- Member 5 -->
+      <div class="member-card">
+        <img src="demo.jpeg" alt="Photo of PRIYADARSHINEE B" class="member-photo">
+        <div class="member-name">PRIYADARSHINEE B</div>
+        <div class="member-role">Junior</div>
+        <div class="member-id">Reg. No: 24MTR051</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+    </div></section>
+
+<section id="mentor"><div class="container">
+  <h2 class="section-title">👨‍💻 Our Mentors</h2>
+  <div class="content-box">
+    <div style="text-align:center;margin-bottom:12px"></div>
+
+    <!-- 👥 New Team Cards (1 Members) -->
+    <div class="mentor-grid">
+      <!-- Member 1 -->
+      <div class="member-card">
+        <img src="sugu.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">Dr. K. SUGANESWARAN</div>
+        <span class="badge">Mechatronics Engineering</span>
+        <P>Dr. K. Suganeswaran is currently serving in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. He holds an M.Tech and a Ph.D., with specialization in Noise, Vibration and Harshness (NVH), Automotive Engineering, Automotive Materials, and Friction Stir Process. He has actively contributed to research with 8 national journal publications and 16 international journal publications. He has presented in 2 national conferences and 18 international conferences. His academic and research interests lie in enhancing vehicle dynamics, materials processing, and noise reduction techniques in automotive systems.</P>
+      </div>
+            <!-- Member 1 -->
+      <div class="member-card">
+        <img src="nith.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">Dr. N. Nithyavathy</div>
+        <span class="badge">Mechatronics Engineering</span>
+        <P>Dr.N.Nithyavathy is serving as an Associate Professor in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. She holds a B.E. in Electronics and Communication Engineering, an M.E. in Mechatronics Engineering, and a Ph.D. in Information and Communication Engineering. With 17 years of academic and research experience, her core areas of expertise include Control Systems Engineering and Composite Materials. She has published more than 55 SCI-indexed journal papers and has delivered over 65 lecture programs across various institutions in India. Her lectures are known for blending practical insights with strong theoretical foundations, making her a sought-after speaker in technical forums.</P>
+      </div>
+    </div></section>
+    
+    <!-- (Optional) Keep the complete list for reference -->
+    <div style="margin-top:18px;text-align:center">
+    </div>
+</div></section>
+
+<!-- 🌍 Modern Footer with Contact -->
+<div id="contact" class="footer">
+  <div class="col">
+    <h3>Contact Info</h3>
+    <p>📍 KONGU ENGINEERING COLLEGE<br> PERUNDURAI, ERODE</p>
+    <p>📞 +91 8870601260</p> <p>📞 +91 8012093099</p>
+    <p>✉ <a href="mailto:support@company.com">mouliesankaransk.22mts@kongu.edu</a></p>
+    <p>✉ <a href="mailto:support@company.com">kavinkumars.22mts@kongu.edu</a></p>
+  </div>
+</div>
+
+<div class="footer-bottom">
+  © 2025 Hand Gesture Controlled Robotic Arm | All Rights Reserved
+</div>
+
+<script>
+const menuBtn=document.querySelector('.menu-btn'),
+nav=document.querySelector('nav ul'),
+contentBoxes=document.querySelectorAll('.content-box');
+
+// Intersection Observer for scroll animations
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
     }
-    function closeVideo(){
-      document.getElementById('videoModal').style.display='none';
-      document.getElementById('youtubeVideo').src='';
-    }
-    window.openVideo=openVideo; window.closeVideo=closeVideo;
+  });
+},{threshold:0.3});
 
-    // Prevent iOS 100vw overflow issues by locking body width
-    window.addEventListener('resize', ()=>{ document.body.style.width='100%'; });
-  </script>
+contentBoxes.forEach(box=>observer.observe(box));
+
+// 🎥 Video Modal Functions
+function openVideo() {
+  document.getElementById("videoModal").style.display = "flex";
+  document.getElementById("youtubeVideo").src = "https://www.youtube.com/embed/0cdQB5YrEKU?autoplay=1";
+}
+function closeVideo() {
+  document.getElementById("videoModal").style.display = "none";
+  document.getElementById("youtubeVideo").src = "";
+}
+</script>
 </body>
 </html>
