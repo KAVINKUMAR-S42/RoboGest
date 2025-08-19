@@ -181,17 +181,63 @@ section{
 header {
   padding: 15px 2%;  /* reduced from 8% to 2% */
 }
+
+/* 👥 Team Cards */
+.team-grid{ 
+  display:grid; 
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px; 
+  margin-top:10px;
+}
+.mentor-grid{ 
+  display:grid; 
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px; 
+  margin-top:10px;
+}
+.member-card{
+  background:#111a2b;
+  border:1px solid rgba(0,230,230,0.5);
+  border-radius:18px;
+  padding:18px 16px;
+  text-align:center;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.member-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 24px rgba(0,230,230,0.3);
+  border-color:#00e6e6;
+}
+.member-photo{
+  width:160px;height:160px;object-fit:cover;
+  border-radius:50%;
+  border:3px solid #00e6e6;
+  margin:8px auto 14px;
+  display:block;
+}
+.member-name{font-weight:700;font-size:18px;margin-bottom:4px;color:#fff}
+.member-role{font-size:14px;color:#a8e6e6;margin-bottom:6px}
+.member-id{font-size:13px;color:#9ab;opacity:.95}
+
+.badge{ 
+  display:inline-block; 
+  padding:4px 10px; 
+  border:1px solid #00e6e6; 
+  border-radius:999px; 
+  font-size:12px; 
+  margin-top:8px; 
+}
 </style>
 </head>
 <body>
 <header>
-  <h1>Hand Gesture Controlled Robotic Arm✅</h1>
+  <h1>👋Hand Gesture Controlled Robotic Arm🤖</h1>
   <div class="menu-btn">☰</div>
   <nav><ul>
     <li><a href="#home">Home</a></li><li><a href="#abstract">Abstract</a></li>
     <li><a href="#problem">Problem</a></li><li><a href="#solution">Solution</a></li>
     <li><a href="#architecture">Architecture</a></li><li><a href="#hardware">Hardware</a></li><li><a href="#Product">Product</a></li>
-    <li><a href="#applications">Applications</a></li><li><a href="#team">Team</a></li>
+    <li><a href="#applications">Applications</a></li><li><a href="#team">Team</a></li><li><a href="#mentor">Mentor</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul></nav>
 </header>
@@ -220,7 +266,8 @@ header {
 <section id="solution"><div class="container">
   <h2 class="section-title">💡 Solution</h2>
   <div class="content-box">
-    A gesture-controlled system with wearable glove sensors and ESP32 modules provides natural, real-time, and wireless control of robotic arms, making them user-friendly and versatile.
+    This project proposes a gesture-controlled robotic arm as an intuitive and hygienic alternative to conventional joystick- or button-based systems. Traditional methods require physical contact and training, which limits their use in healthcare, assistive robotics, or hazardous environments. The developed system uses flex sensors and an MPU6050 accelerometer integrated into a wearable glove to detect finger bending and hand orientation. These signals are processed by an ESP32 microcontroller and transmitted wirelessly via the ESP-NOW protocol to a second ESP32 controlling the robotic arm.
+The arm is powered by MG995 high-torque servos for base and shoulder motion and SG90 micro servos for wrist and gripper control, enabling human-like movement across multiple degrees of freedom. The mechanical structure, modeled in SolidWorks and fabricated using PLA through 3D printing, ensures strength, flexibility, and ergonomic performance. Forward kinematics based on the Denavit–Hartenberg (DH) convention was applied to mathematically represent the arm’s motion, while MATLAB simulations validated trajectory accuracy.
   </div>
 </div></section>
 
@@ -242,6 +289,7 @@ header {
     <!-- 🎥 Video Button -->
     <button class="video-btn" onclick="openVideo()">▶ Project Working Video</button>
       <img src="Glove.jpg" alt="Product Design" class="arch-img">
+      <img src="robo green bg.png" alt="Product Design" class="arch-img">
   </div>
 </div></section>
 
@@ -285,12 +333,78 @@ header {
 <section id="team"><div class="container">
   <h2 class="section-title">👨‍💻 Team Members</h2>
   <div class="content-box">
-    1. MOULIE SANKARAN S K (22MTR054)<br>
-    2. KAVINKUMAR S (22MTR042)<br>
-    3. LOGASUNDHARI B S (22MTR051)<br>
-    4. HARSHITHA A (24MTR030) <br><br>
-    <img src="image.jpg" alt="Product Design" class="arch-img"><br>
-  </div>
+    <div style="text-align:center;margin-bottom:12px">OUR CORE TEAM OF THE PROJECT</div>
+
+    <!-- 👥 New Team Cards (3 Members) -->
+    <div class="team-grid">
+      <!-- Member 1 -->
+      <div class="member-card">
+        <img src="moulie.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">MOULIE SANKARAN S K</div>
+        <div class="member-role">Project Lead & Electrical Setup</div>
+        <div class="member-id">Reg. No: 22MTR054</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+      <!-- Member 2 -->
+      <div class="member-card">
+        <img src="kavin.jpg" alt="Photo of KAVINKUMAR S" class="member-photo">
+        <div class="member-name">KAVINKUMAR S</div>
+        <div class="member-role">Design & Fabrication & Website/UI</div>
+        <div class="member-id">Reg. No: 22MTR042</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+      <!-- Member 3 -->
+      <div class="member-card">
+        <img src="loga.png" alt="Photo of LOGASUNDHARI B S" class="member-photo">
+        <div class="member-name">LOGASUNDHARI B S</div>
+        <div class="member-role">Presentation & Documentaion</div>
+        <div class="member-id">Reg. No: 22MTR051</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+            <!-- Member 4 -->
+      <div class="member-card">
+        <img src="demo.jpeg" alt="Photo of LOGASUNDHARI B S" class="member-photo">
+        <div class="member-name">HARSHITHA A</div>
+        <div class="member-role">Junior</div>
+        <div class="member-id">Reg. No: 24MTR030</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+            <!-- Member 5 -->
+      <div class="member-card">
+        <img src="demo.jpeg" alt="Photo of LOGASUNDHARI B S" class="member-photo">
+        <div class="member-name">PRIYADARSHINEE B</div>
+        <div class="member-role">Junior</div>
+        <div class="member-id">Reg. No: 24MTR051</div>
+        <span class="badge">Mechatronics Engineering</span>
+      </div>
+    </div></section>
+
+<section id="mentor"><div class="container">
+  <h2 class="section-title">👨‍💻 Our Mentors</h2>
+  <div class="content-box">
+    <div style="text-align:center;margin-bottom:12px"></div>
+
+    <!-- 👥 New Team Cards (1 Members) -->
+    <div class="mentor-grid">
+      <!-- Member 1 -->
+      <div class="member-card">
+        <img src="sugu.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">Dr. K. SUGANESWARAN</div>
+        <span class="badge">Mechatronics Engineering</span>
+        <P>Dr. K. Suganeswaran is currently serving in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. He holds an M.Tech and a Ph.D., with specialization in Noise, Vibration and Harshness (NVH), Automotive Engineering, Automotive Materials, and Friction Stir Process. He has actively contributed to research with 8 national journal publications and 16 international journal publications. He has presented in 2 national conferences and 18 international conferences. His academic and research interests lie in enhancing vehicle dynamics, materials processing, and noise reduction techniques in automotive systems.</P>
+      </div>
+            <!-- Member 1 -->
+      <div class="member-card">
+        <img src="nith.jpg" alt="Photo of MOULIE SANKARAN S K" class="member-photo">
+        <div class="member-name">Dr. N. Nithyavathy</div>
+        <span class="badge">Mechatronics Engineering</span>
+        <P>Dr.N.Nithyavathy is serving as an Associate Professor in the Department of Mechatronics Engineering at Kongu Engineering College, Perundurai, Tamil Nadu, India. She holds a B.E. in Electronics and Communication Engineering, an M.E. in Mechatronics Engineering, and a Ph.D. in Information and Communication Engineering. With 17 years of academic and research experience, her core areas of expertise include Control Systems Engineering and Composite Materials. She has published more than 55 SCI-indexed journal papers and has delivered over 65 lecture programs across various institutions in India. Her lectures are known for blending practical insights with strong theoretical foundations, making her a sought-after speaker in technical forums.</P>
+      </div>
+    </div></section>
+    
+    <!-- (Optional) Keep the complete list for reference -->
+    <div style="margin-top:18px;text-align:center">
+    </div>
 </div></section>
 
 <!-- 🌍 Modern Footer with Contact -->
