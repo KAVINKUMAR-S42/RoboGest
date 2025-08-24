@@ -109,6 +109,15 @@ section{
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0,230,230,0.6);
 }
+.arch-img1 {
+  display: block;
+  max-width: 90%;
+  height: auto;
+  margin: 15px auto 0;  
+  border: 2px solid #00e6e6;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,230,230,0.6);
+}
 
 /* 🌍 Footer Styling */
 .footer {
@@ -286,6 +295,7 @@ The arm is powered by MG995 high-torque servos for base and shoulder motion and 
     The hardware Consists of <br><br>
     ➡️ ESP32 Microcontrollers <br> ➡️ Flex Sensors <br> ➡️ MPU6050 Accelerometer <br> ➡️ Servo Motors <br> ➡️ Power Supply <br> ➡️ 3D Printed Robotic Arm.
     <br><br>
+
     <!-- 🎥 Video Button -->
     <button class="video-btn" onclick="openVideo()">▶ Project Working Video</button>
       <img src="Glove.jpg" alt="Product Design" class="arch-img">
@@ -309,7 +319,13 @@ The arm is powered by MG995 high-torque servos for base and shoulder motion and 
     Real-time gesture recognition and motor response were achieved with minimal delay, averaging under 30 milliseconds using the ESP-NOW protocol. The robotic arm successfully performed tasks such as picking, rotating, and positioning lightweight objects at predefined locations. MG995 servos provided adequate torque for smooth base and shoulder movement, while SG90 micro servos managed finer motions in the wrist and gripper. Minor oscillations were observed during rapid movements, mostly due to limitations of the smaller servos. <br><br>
     <img src="Robot.jpg" alt="Product Design" class="arch-img"><br>
     The system proved stable during continuous operation, maintaining signal quality and sensor data consistency for over 30 minutes. Its modular structure also simplified hardware adjustments and part replacement during troubleshooting. As the design relies on sensor input rather than vision systems, performance remained largely unaffected by external factors like ambient lighting or electromagnetic interference. Some minor signal noise was noted in the flex sensor output, which could be mitigated in future versions with enhanced filtering or smoothing algorithms.
-    <img src="Output Result.jpg" alt="Product Design" class="arch-img"><br>
+    <img src="Output Result.jpg" alt="Product Design" class="arch-img"><br><br><br>
+    
+        <!-- 🎥 Embedded Video with Controls -->
+<video class="arch-img1" width="640" height="360" controls autoplay muted loop playsinline>
+  <source src="RoboGest Working Video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 </div>
 </div></section>
 
